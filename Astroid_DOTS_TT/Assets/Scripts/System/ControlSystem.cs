@@ -17,14 +17,14 @@ public partial class ControlSystem : SystemBase
         var inputData = array[0];
         
         Entities.WithAll<PlayerTagComponentData>().
-            ForEach((ref MovementControlComponentData movementComponentData) =>
+            ForEach((ref MovementControlComponentData movementComponentData,ref ShootingComponentData shootingComponent) =>
         {
             var turningLeft = inputData.inputLeft ? 1 : 0;
             var turningRight = inputData.inputRight ? 1 : 0;
             
             var rotationDirection = turningLeft - turningRight;
 
-            //weaponComponent.m_isFiring = inputData.m_inputShoot;
+            shootingComponent.isFiring = inputData.inputShoot;
             
             movementComponentData.currentAngularMovement = new float3(0,0,rotationDirection);
             movementComponentData.currentLinearMovement = inputData.inputForward?1:0;
