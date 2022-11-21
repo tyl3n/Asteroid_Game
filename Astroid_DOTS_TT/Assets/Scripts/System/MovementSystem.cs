@@ -5,30 +5,30 @@ using Unity.Physics.Extensions;
 using Unity.Transforms;
 using UnityEngine;
 
-
 public partial class MovementSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-      Entities.ForEach((
-                ref MovementControlComponentData movementControlComponentData, ref PhysicsVelocity velocity,
-                in MovementParamsComponentData movementParamsComponentData,  
-                in PhysicsMass physicsMass, in Translation translation ) =>
-            {
-                movementControlComponentData.previousPos = translation.Value;
-                
-                PhysicsComponentExtensions.ApplyLinearImpulse(
-                    ref velocity, 
-                    physicsMass, 
-                    movementControlComponentData.currentMovementDirection * 
-                    movementControlComponentData.currentLinearMovement * 
-                    movementParamsComponentData.linearVelocity
-                );
+        Entities.ForEach((
+            ref MovementCommandsComponentData _movementCommandsComponentData, ref PhysicsVelocity _velocity,
+            in MovementParametersComponentData _movementParametersComponentData,  
+            in PhysicsMass _physicsMass, in Translation _translation ) =>
+        {
+    
+            _movementCommandsComponentData.m_lastPosition = _translation.Value;
             
-                if (math.length(velocity.Linear) > movementParamsComponentData.maxLinearVelocity) 
-                    velocity.Linear = math.normalize(velocity.Linear) * movementParamsComponentData.maxLinearVelocity;
+            PhysicsComponentExtensions.ApplyLinearImpulse(
+                ref _velocity, 
+                _physicsMass, 
+                _movementCommandsComponentData.m_currentDirection * 
+                _movementCommandsComponentData.m_currentLinearCommand * 
+                _movementParametersComponentData.m_linearVelocity
+            );
+        
+            if (math.length(_velocity.Linear) > _movementParametersComponentData.m_maxLinearVelocity) 
+                _velocity.Linear = math.normalize(_velocity.Linear) * _movementParametersComponentData.m_maxLinearVelocity;
 
-            }).ScheduleParallel();
+        }).Schedule();
 
     }
 }

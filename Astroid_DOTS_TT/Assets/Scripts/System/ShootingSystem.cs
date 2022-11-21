@@ -1,67 +1,62 @@
 using Unity.Entities;
 using Unity.Transforms;
 
-
 public partial class ShootingSystem : SystemBase
 {
-    private EndSimulationEntityCommandBufferSystem endSimulationEntityCommandBufferSystem;
+    private EndSimulationEntityCommandBufferSystem m_endSimulationEntityCommandBufferSystem;
     
     protected override void OnCreate()
     {
         base.OnCreate();
-        endSimulationEntityCommandBufferSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        m_endSimulationEntityCommandBufferSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
     {
         var deltaTime = Time.DeltaTime;
-        var ecb = endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
+        var ecb = m_endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
 
-        Entities.ForEach((Entity _entity, int entityInQueryIndex , ref ShootingComponentData shootingComponent,
-            in Translation translation,
-            in Rotation rotation) =>
+        Entities.ForEach((Entity _entity, int entityInQueryIndex , ref ShootingComponentData _shootingComponent,
+            in Translation _translation,
+            in Rotation _rotation) =>
         {
-            shootingComponent.timer += deltaTime;
+            _shootingComponent.m_timer += deltaTime;
             
-            if (!shootingComponent.isFiring) return;
-            if (!(shootingComponent.timer > shootingComponent.fireRate)) return;
-            
-            shootingComponent.timer = 0;
-            var newProjectile = ecb.Instantiate(entityInQueryIndex, shootingComponent.projectilePrefab);
+            if (!_shootingComponent.m_isFiring) 
+            {
+                //Debug.Log("Firing");
+                return;
+            }
+
+            if ((_shootingComponent.m_timer <_shootingComponent.m_fireRate)) 
+            {
+                //Debug.Log("Timer to small");
+                return;
+            }
+             //Debug.Log($"FIre !!");
+            _shootingComponent.m_timer = 0;
+            var newProjectile = ecb.Instantiate(entityInQueryIndex, _shootingComponent.m_projectilePrefab);
 
             ecb.SetComponent(entityInQueryIndex , newProjectile, new Translation
             {
-                Value = translation.Value
+                Value = _translation.Value
             });
 
             ecb.SetComponent(entityInQueryIndex , newProjectile, new Rotation()
             {
-                Value = rotation.Value
+                Value = _rotation.Value
             });
 
-            ecb.SetComponent(entityInQueryIndex , newProjectile, new MovementControlComponentData()
+            ecb.SetComponent(entityInQueryIndex , newProjectile, new MovementCommandsComponentData()
             {
-                currentLinearMovement = 1,
+                m_currentLinearCommand = 1,
             });
 
-            ecb.AddComponent(entityInQueryIndex, newProjectile, new ParticleEffectLink()
-            {
-                value = 1
-            });
 
         }).ScheduleParallel();
-        endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(Dependency);
+        m_endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(Dependency);
     }
 }
 
 
 
-public struct ParticleEffectLink : IComponentData
-{
-    public int value;
-}
-
-
-public struct EffectIDSystemState : IComponentData
-{
-}

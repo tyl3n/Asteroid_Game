@@ -1,7 +1,8 @@
 using Unity.Entities;
 
 [GenerateAuthoringComponent]
-public struct PlayerTagComponentData : IComponentData
+public struct ProjectileTagComponent : IComponentData
 {
 
 }
+

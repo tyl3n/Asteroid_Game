@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -9,14 +6,13 @@ public partial class FowardMovementSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.WithAll<FowardMovementVectorComponentData>().ForEach((
-            ref MovementControlComponentData movementControlComponentData, 
-            in Rotation rotation) =>
+        Entities.WithAll<FowardMovementDirectionComponent>().ForEach((
+            ref MovementCommandsComponentData _movementCommandsComponentData, 
+            in Rotation _rotation) =>
         {
-            var direction = math.mul(rotation.Value, math.up());
-            movementControlComponentData.currentMovementDirection = direction;
+            var direction = math.mul(_rotation.Value, math.up());
+            _movementCommandsComponentData.m_currentDirection = direction;
 
         }).Schedule();
     }
-    
 }

@@ -3,9 +3,9 @@ using Unity.Entities;
 [GenerateAuthoringComponent]
 public struct ShootingComponentData : IComponentData
 {
-    public Entity projectilePrefab;
-    public bool isFiring;
-    public float fireRate;
-    public float timer;
+    public Entity m_projectilePrefab;
+    public bool m_isFiring;
+    public float m_fireRate;
+    public float m_timer;
 }
 

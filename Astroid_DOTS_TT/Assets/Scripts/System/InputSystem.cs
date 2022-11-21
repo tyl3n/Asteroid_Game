@@ -1,18 +1,18 @@
-
 using Unity.Entities;
 using UnityEngine;
 
-public partial class InputSystem : SystemBase
+public  partial class InputSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref InputComponentData input) =>
+        Entities.ForEach((ref InputComponentData _input) =>
         {
-            input.inputLeft = Input.GetKey(KeyCode.A);
-            input.inputRight = Input.GetKey(KeyCode.D);
-            input.inputForward = Input.GetKey(KeyCode.W);
-            input.inputShoot = Input.GetMouseButton(0);
+            _input.m_inputLeft = Input.GetKey(KeyCode.A);
+            _input.m_inputRight = Input.GetKey(KeyCode.D);
+            _input.m_inputForward = Input.GetKey(KeyCode.W);
+            _input.m_inputShoot = Input.GetKey(KeyCode.P);
             
         }).Run();
     }
 }
+

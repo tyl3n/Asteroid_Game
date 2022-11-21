@@ -16,18 +16,18 @@ public partial class ControlSystem : SystemBase
         }
         var inputData = array[0];
         
-        Entities.WithAll<PlayerTagComponentData>().
-            ForEach((ref MovementControlComponentData movementComponentData,ref ShootingComponentData shootingComponent) =>
+        Entities.WithAll<PlayerTagComponent>().
+            ForEach((ref MovementCommandsComponentData _movementCommandsComponentData,ref ShootingComponentData _weaponComponent) =>
         {
-            var turningLeft = inputData.inputLeft ? 1 : 0;
-            var turningRight = inputData.inputRight ? 1 : 0;
+            var turningLeft = inputData.m_inputLeft ? 1 : 0;
+            var turningRight = inputData.m_inputRight ? 1 : 0;
             
             var rotationDirection = turningLeft - turningRight;
 
-            shootingComponent.isFiring = inputData.inputShoot;
+            _weaponComponent.m_isFiring = inputData.m_inputShoot;
             
-            movementComponentData.currentAngularMovement = new float3(0,0,rotationDirection);
-            movementComponentData.currentLinearMovement = inputData.inputForward?1:0;
+            _movementCommandsComponentData.m_currentAngularCommand = new float3(0,0,rotationDirection);
+            _movementCommandsComponentData.m_currentLinearCommand = inputData.m_inputForward?1:0;
 
         }).ScheduleParallel();
         

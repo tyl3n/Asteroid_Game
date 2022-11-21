@@ -4,28 +4,26 @@ using Unity.Physics;
 using Unity.Physics.Extensions;
 using Unity.Transforms;
 
-
-public partial class RotateSystem : SystemBase
+public partial class RotationSystem : SystemBase
 {
     protected override void OnUpdate()
     {
         Entities.ForEach((
-            ref PhysicsVelocity velocity, ref MovementControlComponentData movementControlComponentData,
-            ref Rotation rotation, in MovementParamsComponentData movementParamsComponentData, in PhysicsMass physicsMass) =>
+            ref PhysicsVelocity _velocity, ref MovementCommandsComponentData _commandsComponentData,
+            ref Rotation _rotation, in MovementParametersComponentData _parametersComponentData, in PhysicsMass _physicsMass) =>
         {
             PhysicsComponentExtensions.ApplyAngularImpulse(
-                ref velocity, physicsMass,
-                movementControlComponentData.currentAngularMovement * movementParamsComponentData.angularVelocity);
+                ref _velocity, _physicsMass,
+                _commandsComponentData.m_currentAngularCommand * _parametersComponentData.m_angularVelocity);
 
-            var AngularMovement = PhysicsComponentExtensions.GetAngularVelocityWorldSpace(in velocity, in physicsMass, in rotation);
+            var currentAngularSpeed = PhysicsComponentExtensions.GetAngularVelocityWorldSpace(in _velocity, in _physicsMass, in _rotation);
         
-            if(math.length(AngularMovement)>movementParamsComponentData.maxAngularVelocity)
+            if(math.length(currentAngularSpeed)>_parametersComponentData.m_maxAngularVelocity)
             {
-                PhysicsComponentExtensions.SetAngularVelocityWorldSpace(ref velocity, physicsMass, rotation,
-                    math.normalize(AngularMovement)* movementParamsComponentData.maxAngularVelocity );
+                PhysicsComponentExtensions.SetAngularVelocityWorldSpace(ref _velocity, _physicsMass, _rotation,
+                    math.normalize(currentAngularSpeed)* _parametersComponentData.m_maxAngularVelocity );
             }
         
         }).Schedule();
     }
 }
-
