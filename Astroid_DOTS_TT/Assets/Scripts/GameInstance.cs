@@ -14,7 +14,8 @@ public class GameInstance : MonoBehaviour
 
     private float m_currentTimer;
     public float m_asteroidSpawnFrequency = 2f;
-
+    public int m_currentAsteroidSpawnCount = 0;
+    public int m_maxAsteroidSpawnCount = 10;
     private void Awake()
     {
         m_entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -34,10 +35,18 @@ public class GameInstance : MonoBehaviour
 
     private void SpawnAsteroid()
     {
+
+        if (m_currentAsteroidSpawnCount >= m_maxAsteroidSpawnCount)
+        {
+            return;
+        }
+
         var buffer = m_entityManager.GetBuffer<EntityBufferElement>(m_asteroidLibrary);
         var lengthOfBuffer = buffer.Length;
         var randomAsteroidIndex = Random.Range(0, lengthOfBuffer);
         var newAsteroid = m_entityManager.Instantiate(buffer[randomAsteroidIndex].m_entity);
+
+        ++m_currentAsteroidSpawnCount;
 
         var randomSpawnPositionIndex = Random.Range(0, m_spawnPositionsVectors.Length);
         var spawnPosition = m_spawnPositionsVectors[randomSpawnPositionIndex];
