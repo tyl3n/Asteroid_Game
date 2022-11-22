@@ -7,6 +7,7 @@ public struct InputComponentData : IComponentData
     public bool m_inputRight;
     public bool m_inputForward;
     public bool m_inputShoot;
+    public bool m_inputHyperspace;
 }
     
 

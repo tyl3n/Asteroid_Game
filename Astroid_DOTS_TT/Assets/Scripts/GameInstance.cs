@@ -8,6 +8,8 @@ public class GameInstance : MonoBehaviour
 {
     public Entity m_asteroidLibrary;
     public Entity m_UFOLibrary;
+    public Entity m_pickupPrefabs;
+    public Entity m_gameInfo;
     private EntityManager m_entityManager;
 
     public Transform[] m_asteroidsSpawnPositions;
@@ -36,6 +38,7 @@ public class GameInstance : MonoBehaviour
     void Start()
     {
         m_entityManager.CreateEntity(typeof(InputComponentData));
+        m_gameInfo = m_entityManager.CreateEntity(typeof(GameInfoComponentData));
     }
 
     private void SpawnAsteroid()
@@ -50,8 +53,11 @@ public class GameInstance : MonoBehaviour
         var lengthOfBuffer = buffer.Length;
         var randomAsteroidIndex = Random.Range(0, lengthOfBuffer);
         var newAsteroid = m_entityManager.Instantiate(buffer[randomAsteroidIndex].m_entity);
-
-        ++m_currentAsteroidSpawnCount;
+    	
+        m_entityManager.SetComponentData(m_gameInfo, new GameInfoComponentData()
+        {
+                m_currentAsteroidSpawnCount = m_currentAsteroidSpawnCount +1
+        });
 
         var randomSpawnPositionIndex = Random.Range(0, m_spawnPositionsVectors.Length);
         var spawnPosition = m_spawnPositionsVectors[randomSpawnPositionIndex];

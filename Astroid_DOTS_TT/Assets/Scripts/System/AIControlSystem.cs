@@ -19,7 +19,6 @@ public partial class AIControlSystem : SystemBase
 
     protected override void OnUpdate()
     {
-
         var deltaTime = Time.DeltaTime;
 
         Entities.WithAll<UFOTagComponent>().
