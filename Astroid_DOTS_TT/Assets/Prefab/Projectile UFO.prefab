@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 7611548586505267377}
   - component: {fileID: 8221141035233611914}
   m_Layer: 0
-  m_Name: Projectile
+  m_Name: Projectile UFO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,7 +94,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 86ca39e50ac3ceb45be6e7db517e30bb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e21d6c49363687349925d1e83fd1595e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -211,7 +211,7 @@ MonoBehaviour:
         Category01: 0
         Category02: 1
         Category03: 0
-        Category04: 0
+        Category04: 1
         Category05: 0
         Category06: 0
         Category07: 0
@@ -243,10 +243,10 @@ MonoBehaviour:
       m_Override: 0
       m_Value:
         Category00: 0
-        Category01: 1
-        Category02: 0
-        Category03: 0
-        Category04: 1
+        Category01: 0
+        Category02: 1
+        Category03: 1
+        Category04: 0
         Category05: 0
         Category06: 0
         Category07: 0
@@ -390,8 +390,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_linearVelocity: 100
   m_maxLinearVelocity: 25
-  m_angularVelocity: 1
-  m_maxAngularVelocity: 3
+  m_angularVelocity: 0
+  m_maxAngularVelocity: 0
 --- !u!114 &8221141035233611914
 MonoBehaviour:
   m_ObjectHideFlags: 0
