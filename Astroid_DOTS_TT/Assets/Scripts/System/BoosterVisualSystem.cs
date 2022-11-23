@@ -1,9 +1,13 @@
 using Unity.Entities;
+using Unity.Collections;
+using Unity.Entities;
+using Unity.Mathematics;
+
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
-public partial class ShieldActivationSystem : SystemBase
+public partial class BoosterVisualSystem : SystemBase
 {
     private EntityManager m_entityManager;
 
@@ -18,19 +22,21 @@ public partial class ShieldActivationSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        var deltaTime = Time.DeltaTime;
-        Entities.WithoutBurst().WithStructuralChanges().WithAll<PlayerTagComponent>().ForEach((ref PlayerInfoComponentData playerInfo) =>
-        {
-            playerInfo.m_shieldTimer += deltaTime;
-            if (playerInfo.m_shieldActive)
-            {
-                if (playerInfo.m_shieldTimer > playerInfo.m_shieldTime)
-                {
-                    playerInfo.m_shieldActive = false;
-                    playerInfo.m_shieldTimer = 0.0f;
-                }
-            }
+        
+        var query = GetEntityQuery(typeof(InputComponentData));
+        var array = query.ToComponentDataArray<InputComponentData>(Allocator.TempJob);
 
+        if (array.Length == 0)
+        {
+            array.Dispose();
+            return;
+        }
+        var inputData = array[0];
+
+        Entities.WithoutBurst().WithAll<BoosterTagComponent>().ForEach(( SpriteRenderer _renderer ) =>
+        {
+            _renderer.enabled = inputData.m_inputForward;
         }).Run();
+        array.Dispose();
     }
 }

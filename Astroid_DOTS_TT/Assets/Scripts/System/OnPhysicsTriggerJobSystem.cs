@@ -21,18 +21,18 @@ using Unity.Physics.Systems;
 
         public void Execute ( TriggerEvent triggerEvent )
         {
-       if (m_destroyables.HasComponent(triggerEvent.EntityA))
-        {
-            var destroyable = m_destroyables[triggerEvent.EntityA];
-            destroyable.m_mustBeDestroyed = true;
-            m_destroyables[triggerEvent.EntityA] = destroyable;
+            if (m_destroyables.HasComponent(triggerEvent.EntityA))
+            {
+                var destroyable = m_destroyables[triggerEvent.EntityA];
+                destroyable.m_mustBeDestroyed = true;
+                m_destroyables[triggerEvent.EntityA] = destroyable;
             }
-        if (m_destroyables.HasComponent(triggerEvent.EntityB))
-        {
-            var destroyable = m_destroyables[triggerEvent.EntityB];
-            destroyable.m_mustBeDestroyed = true;
-            m_destroyables[triggerEvent.EntityB] = destroyable;
-        }
+            if (m_destroyables.HasComponent(triggerEvent.EntityB))
+            {
+                var destroyable = m_destroyables[triggerEvent.EntityB];
+                destroyable.m_mustBeDestroyed = true;
+                m_destroyables[triggerEvent.EntityB] = destroyable;
+            }
         }
     }
 

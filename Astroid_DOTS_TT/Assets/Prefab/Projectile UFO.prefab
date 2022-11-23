@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24075417eef0d784fb4f250867725da0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxLifeTime: 3
+  m_maxLifeTime: 2
   m_currentLifeTime: 0
 --- !u!114 &7099370937289880575
 MonoBehaviour:
@@ -209,7 +209,7 @@ MonoBehaviour:
       m_Value:
         Category00: 0
         Category01: 0
-        Category02: 1
+        Category02: 0
         Category03: 0
         Category04: 1
         Category05: 0

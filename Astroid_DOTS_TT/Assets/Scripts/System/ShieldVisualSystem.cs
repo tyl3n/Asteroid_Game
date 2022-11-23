@@ -1,12 +1,13 @@
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
+using Unity.Collections;
 using Random = UnityEngine.Random;
-public partial class PickUpDestructionSystem : SystemBase
+public partial class ShieldVisualSystem : SystemBase
 {
     private EntityManager m_entityManager;
+
     private EndSimulationEntityCommandBufferSystem m_endSimulationEntityCommandBufferSystem;
     
     protected override void OnCreate()
@@ -14,7 +15,6 @@ public partial class PickUpDestructionSystem : SystemBase
         base.OnCreate();
         m_entityManager = World.EntityManager;
         m_endSimulationEntityCommandBufferSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-        
     }
 
     protected override void OnUpdate()
@@ -27,26 +27,14 @@ public partial class PickUpDestructionSystem : SystemBase
             array.Dispose();
             return;
         }
-        
-        var playerInfo = array[0];
-
-        var playerInfoEntity = GetSingletonEntity<PlayerInfoComponentData>();
-        
+        var gameInfo = array[0];
         var ecb = m_endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-        Entities.WithoutBurst().WithStructuralChanges().WithAll<PickUpTagComponent>().ForEach((
-            Entity _entity, int entityInQueryIndex ,
-            in DestroyableComponentData _destroyable,
-            in Rotation _rotation,
-            in Translation _translation) =>
+        Entities.WithoutBurst().WithStructuralChanges().WithAll<ShieldTagComponent>().ForEach(( SpriteRenderer _renderer ) =>
         {
-            if(_destroyable.m_mustBeDestroyed)
-            {
-                m_entityManager.DestroyEntity(_entity);
-                m_entityManager.SetComponentData(playerInfoEntity,new PlayerInfoComponentData(){
-                    m_shieldActive = true
-                });
-            } 
+            _renderer.enabled = gameInfo.m_shieldActive;
         }).Run();
         array.Dispose();
+    
+        
     }
 }

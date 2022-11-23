@@ -1,12 +1,13 @@
-using Unity.Collections;
 using Unity.Entities;
+using Unity.Collections;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
-public partial class PickUpDestructionSystem : SystemBase
+public partial class PlayerDestructionSystem : SystemBase
 {
     private EntityManager m_entityManager;
+
     private EndSimulationEntityCommandBufferSystem m_endSimulationEntityCommandBufferSystem;
     
     protected override void OnCreate()
@@ -14,13 +15,12 @@ public partial class PickUpDestructionSystem : SystemBase
         base.OnCreate();
         m_entityManager = World.EntityManager;
         m_endSimulationEntityCommandBufferSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-        
     }
 
     protected override void OnUpdate()
     {
-        var query = GetEntityQuery(typeof(PlayerInfoComponentData));
-        var array = query.ToComponentDataArray<PlayerInfoComponentData>(Allocator.TempJob);
+        var query = GetEntityQuery(typeof(GameInfoComponentData));
+        var array = query.ToComponentDataArray<GameInfoComponentData>(Allocator.TempJob);
 
         if (array.Length == 0)
         {
@@ -28,24 +28,32 @@ public partial class PickUpDestructionSystem : SystemBase
             return;
         }
         
-        var playerInfo = array[0];
+        var gameInfo = array[0];
 
-        var playerInfoEntity = GetSingletonEntity<PlayerInfoComponentData>();
+        var gameInfoEntity = GetSingletonEntity<GameInfoComponentData>();
         
         var ecb = m_endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-        Entities.WithoutBurst().WithStructuralChanges().WithAll<PickUpTagComponent>().ForEach((
+        Entities.WithoutBurst().WithStructuralChanges().WithAll<PlayerTagComponent>().ForEach((
             Entity _entity, int entityInQueryIndex ,
-            in DestroyableComponentData _destroyable,
+            ref DestroyableComponentData _destroyable,
+            ref PlayerInfoComponentData _playerInfo,
             in Rotation _rotation,
             in Translation _translation) =>
         {
             if(_destroyable.m_mustBeDestroyed)
             {
-                m_entityManager.DestroyEntity(_entity);
-                m_entityManager.SetComponentData(playerInfoEntity,new PlayerInfoComponentData(){
-                    m_shieldActive = true
-                });
-            } 
+                if(!_playerInfo.m_shieldActive)
+                {
+                    m_entityManager.DestroyEntity(_entity);
+                    _playerInfo.m_shieldActive = false;
+                } 
+                else 
+                {
+                    _destroyable.m_mustBeDestroyed = false;
+                    _playerInfo.m_shieldActive = false;
+                }
+            }
+            
         }).Run();
         array.Dispose();
     }
