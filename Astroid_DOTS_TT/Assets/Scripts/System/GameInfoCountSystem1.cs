@@ -27,8 +27,7 @@ public partial class GameInfoCountSystem : SystemBase
     
             int UFOCount = query3.CalculateEntityCount();
             gameInfo.m_currentUFOSpawnCount = UFOCount;
-
-            
+    
             EntityQuery query4 = GetEntityQuery(ComponentType.ReadOnly<PlayerTagComponent>());
     
             int playerCount = query4.CalculateEntityCount();

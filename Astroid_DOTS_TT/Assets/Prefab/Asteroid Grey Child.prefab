@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 7945343916412353512}
   - component: {fileID: 6077869181082601004}
   - component: {fileID: 5192239326285500049}
+  - component: {fileID: 6175361771625446066}
+  - component: {fileID: 3412848605955501245}
   m_Layer: 0
   m_Name: Asteroid Grey Child
   m_TagString: Untagged
@@ -117,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_childrenPrefab: {fileID: 0}
   m_numberOfChildrenToSpawn: 0
+  m_scoreValue: 5
 --- !u!114 &1508923756845091457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,9 +243,9 @@ MonoBehaviour:
     y: 0
     z: 0
   m_PrimitiveSize:
-    x: 1
-    y: 1
-    z: 1
+    x: 1.18
+    y: 1.18
+    z: 1.18
   m_PrimitiveOrientation:
     Value:
       x: 0
@@ -250,15 +253,15 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 1
-    Radius: 0.5
+    Height: 1.18
+    Radius: 0.59
     Axis: 2
   m_Cylinder:
-    Height: 1
-    Radius: 0.5
+    Height: 1.18
+    Radius: 0.59
     Axis: 2
   m_CylinderSideCount: 20
-  m_SphereRadius: 0.5
+  m_SphereRadius: 0.59
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
@@ -378,3 +381,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mustBeDestroyed: 0
+--- !u!114 &6175361771625446066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a1e4dc4cd0af24d8833c3336d9a5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3412848605955501245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0a80c23ca28094db598c36ee529455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

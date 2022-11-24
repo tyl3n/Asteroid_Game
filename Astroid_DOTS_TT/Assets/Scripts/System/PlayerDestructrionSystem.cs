@@ -22,7 +22,7 @@ public partial class PlayerDestructionSystem : SystemBase
         var query = GetEntityQuery(typeof(GameInfoComponentData));
         var array = query.ToComponentDataArray<GameInfoComponentData>(Allocator.TempJob);
 
-        if (array.Length == 0)
+        if (array.Length == 0 ||array.Length > 1 )
         {
             array.Dispose();
             return;
@@ -45,12 +45,18 @@ public partial class PlayerDestructionSystem : SystemBase
                 if(!_playerInfo.m_shieldActive)
                 {
                     m_entityManager.DestroyEntity(_entity);
-                    _playerInfo.m_shieldActive = false;
+                    var newLife = gameInfo.m_life - 1; 
+                    m_entityManager.SetComponentData(gameInfoEntity,new GameInfoComponentData
+                    {
+                        m_life = newLife,
+                        m_score = gameInfo.m_score
+                    });
+                    
                 } 
                 else 
                 {
                     _destroyable.m_mustBeDestroyed = false;
-                    _playerInfo.m_shieldActive = false;
+                    
                 }
             }
             

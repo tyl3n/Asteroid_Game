@@ -1,13 +1,23 @@
 
 using Unity.Entities;
 using Unity.Transforms;
+using Unity.Collections;
 using UnityEngine;
 
 public partial class OffScreenDetectionSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        var screenData = GetSingleton<ScreenInfoComponentData>();
+        var query = GetEntityQuery(typeof(ScreenInfoComponentData));
+        var array = query.ToComponentDataArray<ScreenInfoComponentData>(Allocator.TempJob);
+
+        if (array.Length == 0 || array.Length>1)
+        {
+            array.Dispose();
+            return;
+        }
+        
+        var screenData = array[0];
 
         Entities.ForEach(
             (Entity _entity, ref OffScreenWrapperComponentData _offScreen,
@@ -21,5 +31,6 @@ public partial class OffScreenDetectionSystem : SystemBase
                 
                 
             }).Schedule();
+            array.Dispose();
     }
 }

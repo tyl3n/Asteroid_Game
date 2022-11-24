@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 7945343916412353512}
   - component: {fileID: 6077869181082601004}
   - component: {fileID: 5192239326285500049}
+  - component: {fileID: 4124588102497001249}
+  - component: {fileID: 2870120035877653}
   m_Layer: 0
   m_Name: Asteroid Grey
   m_TagString: Untagged
@@ -117,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_childrenPrefab: {fileID: 1508923756845091485, guid: 68bf084caeae94249ab788537b5d3f88, type: 3}
   m_numberOfChildrenToSpawn: 2
+  m_scoreValue: 5
 --- !u!114 &1508923756845091457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,7 +326,7 @@ MonoBehaviour:
         Category00: 0
         Category01: 0
         Category02: 1
-        Category03: 0
+        Category03: 1
         Category04: 0
         Category05: 0
         Category06: 0
@@ -378,3 +381,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mustBeDestroyed: 0
+--- !u!114 &4124588102497001249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a1e4dc4cd0af24d8833c3336d9a5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2870120035877653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0a80c23ca28094db598c36ee529455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

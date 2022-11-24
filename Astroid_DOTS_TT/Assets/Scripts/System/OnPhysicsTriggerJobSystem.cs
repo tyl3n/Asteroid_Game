@@ -26,7 +26,7 @@ using Unity.Physics.Systems;
                 var destroyable = m_destroyables[triggerEvent.EntityA];
                 destroyable.m_mustBeDestroyed = true;
                 m_destroyables[triggerEvent.EntityA] = destroyable;
-            }
+                }
             if (m_destroyables.HasComponent(triggerEvent.EntityB))
             {
                 var destroyable = m_destroyables[triggerEvent.EntityB];

@@ -2,7 +2,9 @@ using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 public class GameInstance : MonoBehaviour
 {
@@ -10,8 +12,11 @@ public class GameInstance : MonoBehaviour
     public Entity m_UFOLibrary;
     public Entity m_pickupLibrary;
     public Entity m_playerLibrary;
-    public Entity m_gameInfo;
+
+    public Entity m_gameInfoEntity;
+    public Entity m_inputInfoEntity;
     private EntityManager m_entityManager;
+    private World  m_world;
 
     public Transform[] m_asteroidsSpawnPositions;
     public Transform[] m_pickUpSpawnPositions;
@@ -29,16 +34,19 @@ public class GameInstance : MonoBehaviour
     public float m_UFOSpawnFrequency = 2f;
     public float m_pickUpSpawnFrequency = 2f;
     public float m_playerSpawnFrequency = 2f;
-
-    public float m_shieldMaxTime = 4f;
     
     public int m_maxAsteroidSpawnCount = 10;
     public int m_maxUFOSpawnCount = 1;
     public int m_maxPickUpSpawnCount = 10;
 
-
     private void Awake()
     {
+       
+        if (World.DefaultGameObjectInjectionWorld == null)
+        {
+            DefaultWorldInitialization.Initialize("Base World", false);
+        }
+
         m_entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         m_spawnPositionsVectors = new Vector3[m_asteroidsSpawnPositions.Length];
@@ -63,14 +71,37 @@ public class GameInstance : MonoBehaviour
 
     void Start()
     {
-        m_entityManager.CreateEntity(typeof(InputComponentData));
-        m_gameInfo = m_entityManager.CreateEntity(typeof(GameInfoComponentData));
+        var gameParamQuery = m_entityManager.CreateEntityQuery(typeof(GameParamsComponentData));
+        var gameParamArray = gameParamQuery.ToComponentDataArray<GameParamsComponentData>(Allocator.TempJob);
+
+        if (gameParamArray.Length == 0 || gameParamArray.Length>1)
+        {
+            gameParamArray.Dispose();
+            return;
+        }
+        
+        var gameParams = gameParamArray[0];
+        
+        m_inputInfoEntity = m_entityManager.CreateEntity(typeof(InputComponentData));
+        m_gameInfoEntity = m_entityManager.CreateEntity(typeof(GameInfoComponentData));
+    
+        m_entityManager.SetComponentData(m_gameInfoEntity,new GameInfoComponentData
+        {
+            m_life = gameParams.m_startLife,
+            m_score = 0
+        });
+        gameParamArray.Dispose();
 
     }
 
     private void SpawnAsteroid()
     {
-        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfo);
+        if (m_gameInfoEntity == null)
+        {
+            return;
+        } 
+        
+        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfoEntity);
         
         if (gameInfo.m_currentAsteroidSpawnCount >= m_maxAsteroidSpawnCount)
         {
@@ -101,7 +132,6 @@ public class GameInstance : MonoBehaviour
 
         m_entityManager.SetComponentData(newAsteroid, new MovementCommandsComponentData()
         {
-            m_lastPosition = spawnPosition,
             m_currentDirection = randomMoveDirection,
             m_currentLinearCommand = 1,
             m_currentAngularCommand = randomRotation
@@ -110,12 +140,18 @@ public class GameInstance : MonoBehaviour
 
      private void SpawnUFO()
     {
-         GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfo);
+         if (m_gameInfoEntity == null)
+        {
+            return;
+        } 
         
-        if (gameInfo.m_currentUFOSpawnCount > 0)
+        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfoEntity);
+        
+        if (gameInfo.m_currentUFOSpawnCount >= m_maxUFOSpawnCount)
         {
             return;
         }
+
 
         var buffer = m_entityManager.GetBuffer<EntityBufferElement>(m_UFOLibrary);
         var lengthOfBuffer = buffer.Length;
@@ -149,9 +185,14 @@ public class GameInstance : MonoBehaviour
 
     private void SpawnPickUp()
     {
-        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfo);
-        
-        if (gameInfo.m_currentPickUpSpawnCount > 0)
+        if (m_gameInfoEntity == null)
+        {
+            return;
+        } 
+
+        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfoEntity);
+
+        if (gameInfo.m_currentPickUpSpawnCount >= m_maxPickUpSpawnCount)
         {
             return;
         }
@@ -172,8 +213,13 @@ public class GameInstance : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfo);
+        if (m_gameInfoEntity == null)
+        {
+            return;
+        } 
         
+        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfoEntity);
+
         if (gameInfo.m_currentPlayerCount > 0)
         {
             return;
@@ -184,17 +230,42 @@ public class GameInstance : MonoBehaviour
         var randomPlayerIndex = Random.Range(0, lengthOfBuffer);
         var newPlayer = m_entityManager.Instantiate(buffer[randomPlayerIndex].m_entity);
 
-        var randomSpawnPositionIndex = Random.Range(0, m_playerSpawnPositionsVectors.Length);
-        var spawnPosition = m_playerSpawnPositionsVectors[randomSpawnPositionIndex];
+        var spawnPosition = gameInfo.m_nextSpawnPoint;
         
         m_entityManager.SetComponentData(newPlayer, new Translation()
         {
             Value = spawnPosition
         });
     }
+    
 
+    private void CheckGameOverCondition()
+    {
+        if (m_gameInfoEntity == null)
+        {
+            return;
+        } 
+        
+        GameInfoComponentData gameInfo = m_entityManager.GetComponentData<GameInfoComponentData>(m_gameInfoEntity);
+
+        if (gameInfo.m_life <= 0)
+        {
+            World.DefaultGameObjectInjectionWorld.QuitUpdate = true;
+            World.DefaultGameObjectInjectionWorld.EntityManager.CompleteAllJobs();
+            World.DefaultGameObjectInjectionWorld.EntityManager.GetAllEntities().Dispose();
+            World.DefaultGameObjectInjectionWorld.Dispose();
+
+            SceneManager.LoadScene(1);
+        }
+    
+    }
     private void Update()
     {
+        if (World.DefaultGameObjectInjectionWorld == null)
+        {
+            return;
+        }
+
         m_currentTimer += Time.deltaTime;
         m_UFOTimer += Time.deltaTime;
         m_PickUpTimer += Time.deltaTime;
@@ -223,6 +294,9 @@ public class GameInstance : MonoBehaviour
             m_PickUpTimer = 0;
             SpawnPickUp();
         }
+
+        
+        CheckGameOverCondition();
 
     }
 }

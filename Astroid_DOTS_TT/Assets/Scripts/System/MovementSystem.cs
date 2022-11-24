@@ -14,8 +14,6 @@ public partial class MovementSystem : SystemBase
             in MovementParametersComponentData _movementParametersComponentData,  
             in PhysicsMass _physicsMass, in Translation _translation ) =>
         {
-    
-            _movementCommandsComponentData.m_lastPosition = _translation.Value;
             
             PhysicsComponentExtensions.ApplyLinearImpulse(
                 ref _velocity, 

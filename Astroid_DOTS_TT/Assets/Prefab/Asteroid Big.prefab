@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 7945343916412353512}
   - component: {fileID: 6077869181082601004}
   - component: {fileID: 7877155557942547209}
+  - component: {fileID: 4257396921747763879}
+  - component: {fileID: 649306424364321149}
   m_Layer: 0
   m_Name: Asteroid Big
   m_TagString: Untagged
@@ -117,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_childrenPrefab: {fileID: 1508923756845091485, guid: 68bf084caeae94249ab788537b5d3f88, type: 3}
   m_numberOfChildrenToSpawn: 2
+  m_scoreValue: 20
 --- !u!114 &1508923756845091457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,3 +381,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_mustBeDestroyed: 0
+--- !u!114 &4257396921747763879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94a1e4dc4cd0af24d8833c3336d9a5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &649306424364321149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508923756845091485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0a80c23ca28094db598c36ee529455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

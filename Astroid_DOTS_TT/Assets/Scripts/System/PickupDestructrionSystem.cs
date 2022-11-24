@@ -22,7 +22,7 @@ public partial class PickUpDestructionSystem : SystemBase
         var query = GetEntityQuery(typeof(PlayerInfoComponentData));
         var array = query.ToComponentDataArray<PlayerInfoComponentData>(Allocator.TempJob);
 
-        if (array.Length == 0)
+        if (array.Length == 0 || array.Length>1)
         {
             array.Dispose();
             return;
@@ -43,7 +43,11 @@ public partial class PickUpDestructionSystem : SystemBase
             {
                 m_entityManager.DestroyEntity(_entity);
                 m_entityManager.SetComponentData(playerInfoEntity,new PlayerInfoComponentData(){
-                    m_shieldActive = true
+                    m_shieldActive = true,
+                    m_shieldTimer = 0.0f,
+                    m_hyperSpaceActive = playerInfo.m_hyperSpaceActive,
+                    m_hyperSpaceCooldownTimer = playerInfo.m_hyperSpaceCooldownTimer
+
                 });
             } 
         }).Run();

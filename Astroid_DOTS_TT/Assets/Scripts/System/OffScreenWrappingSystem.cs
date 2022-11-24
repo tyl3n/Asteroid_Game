@@ -1,11 +1,21 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.Collections;
 public partial class OffScreenWrappingSystem : SystemBase
 {
     protected override void OnUpdate()
     {
-        var screenDataComponent = GetSingleton<ScreenInfoComponentData>();
+        var query = GetEntityQuery(typeof(ScreenInfoComponentData));
+        var array = query.ToComponentDataArray<ScreenInfoComponentData>(Allocator.TempJob);
+
+        if (array.Length == 0 || array.Length>1)
+        {
+            array.Dispose();
+            return;
+        }
+        
+        var screenDataComponent = array[0];
         
         Entities.WithAll<OffScreenWrapperComponentData>().ForEach((
             Entity _entity, ref OffScreenWrapperComponentData _offScreenWrapperComponent, ref Translation _translation) => 
@@ -33,6 +43,7 @@ public partial class OffScreenWrappingSystem : SystemBase
             _offScreenWrapperComponent.m_isOffScreenLeft = false;
             
         }).ScheduleParallel();
+        array.Dispose();
     }
 
     private static float3 SpawnOnLeft(float3 _position, float _bounds, ScreenInfoComponentData _screenDataComponent)

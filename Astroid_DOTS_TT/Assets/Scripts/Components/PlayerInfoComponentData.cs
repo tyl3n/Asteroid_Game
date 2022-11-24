@@ -5,5 +5,7 @@ public struct PlayerInfoComponentData : IComponentData
 {
     public bool m_shieldActive;
     public float m_shieldTimer;
-    public float m_shieldTime;
+    
+    public bool m_hyperSpaceActive;
+    public float m_hyperSpaceCooldownTimer;
 }

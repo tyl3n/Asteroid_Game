@@ -2,7 +2,9 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
+using Unity.Collections;
 using Random = UnityEngine.Random;
+
 public partial class AsteroidDestructionSystem : SystemBase
 {
     private EntityManager m_entityManager;
@@ -18,6 +20,19 @@ public partial class AsteroidDestructionSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        var query = GetEntityQuery(typeof(GameInfoComponentData));
+        var array = query.ToComponentDataArray<GameInfoComponentData>(Allocator.TempJob);
+
+        if (array.Length == 0 || array.Length>1)
+        {
+            array.Dispose();
+            return;
+        }
+        
+        var gameInfo = array[0];
+
+        var gameInfoEntity = GetSingletonEntity<GameInfoComponentData>();
+
         var ecb = m_endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
         Entities.WithoutBurst().WithStructuralChanges().WithAll<AsteroidTagComponent>().ForEach((
             Entity _entity, int entityInQueryIndex ,
@@ -29,6 +44,14 @@ public partial class AsteroidDestructionSystem : SystemBase
             if(_destroyable.m_mustBeDestroyed)
             {
                 m_entityManager.DestroyEntity(_entity);
+                var newScore = gameInfo.m_score + _asteroidTag.m_scoreValue;
+
+                m_entityManager.SetComponentData(gameInfoEntity, new GameInfoComponentData
+                {
+                    m_score = newScore,
+                    m_life = gameInfo.m_life
+                });
+
                 if (_asteroidTag.m_childrenPrefab != null )
                 {
                     
@@ -61,5 +84,6 @@ public partial class AsteroidDestructionSystem : SystemBase
                 } 
             } 
         }).Run();
+        array.Dispose();
     }
 }

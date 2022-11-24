@@ -22,16 +22,17 @@ public partial class ShieldVisualSystem : SystemBase
         var query = GetEntityQuery(typeof(PlayerInfoComponentData));
         var array = query.ToComponentDataArray<PlayerInfoComponentData>(Allocator.TempJob);
 
-        if (array.Length == 0)
+        if (array.Length == 0 || array.Length > 1)
         {
             array.Dispose();
             return;
         }
-        var gameInfo = array[0];
+        var playerInfo = array[0];
+
         var ecb = m_endSimulationEntityCommandBufferSystem.CreateCommandBuffer().AsParallelWriter();
-        Entities.WithoutBurst().WithStructuralChanges().WithAll<ShieldTagComponent>().ForEach(( SpriteRenderer _renderer ) =>
+        Entities.WithoutBurst().WithAll<ShieldTagComponent>().ForEach(( SpriteRenderer _renderer ) =>
         {
-            _renderer.enabled = gameInfo.m_shieldActive;
+            _renderer.enabled = playerInfo.m_shieldActive;
         }).Run();
         array.Dispose();
     
