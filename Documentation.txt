@@ -1,0 +1,4 @@
+I used some MonoBehaviour the sound and some systems that need to interact with external stuff like UI.
+But otherwise used Unity DOTS.I tried to seperate every system to be as Indepedent as I could. And keep most system stateless.
+I add tag components that are dataComponent with nothing or very little data in it to have a lightweight to identify specialized entities IE
+Asteroid, UFO, etc.
