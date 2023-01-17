@@ -1,7 +1,5 @@
-# SBox_Astroid_Test
- Astroid Test
-You can access the git repo at https://github.com/tyl3n/SBox_Astroid_Test
-Test programmed by Antoine McNabb-Baltar
+A small asteroid game programmed for fun with Unity DoTS
+Programmed by Antoine McNabb-Baltar
 
 Controls 
 ---------------------------
